@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MicroServiceExampleAPI</name>
+    </assembly>
+    <members>
+        <member name="T:MicroServiceExampleAPI.Controllers.ValuesController">
+            <summary>
+            Values controller.
+            </summary>
+        </member>
+        <member name="M:MicroServiceExampleAPI.Controllers.ValuesController.GetV1">
+            <summary>
+            Gets the v1.
+            </summary>
+            <returns>The v1.</returns>
+        </member>
+        <member name="M:MicroServiceExampleAPI.Controllers.ValuesController.GetV2">
+            <summary>
+            Gets the v2.
+            </summary>
+            <returns>The v2.</returns>
+        </member>
+        <member name="M:MicroServiceExampleAPI.Controllers.ValuesController.GetById(System.Int32)">
+            <summary>
+            Gets the by identifier.
+            </summary>
+            <returns>The by identifier.</returns>
+            <param name="id">Identifier.</param>
+        </member>
+    </members>
+</doc>
