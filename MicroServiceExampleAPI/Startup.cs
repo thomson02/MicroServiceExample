@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.PlatformAbstractions;
+using MicroServiceExampleAPI.Data;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using AutoMapper;
 
 namespace MicroServiceExampleAPI
 {
@@ -23,7 +27,18 @@ namespace MicroServiceExampleAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddDbContext<ExampleApiContext>(cfg => {
+                // Can use in memory db.
+                cfg.UseSqlServer(Configuration.GetConnectionString("ExampleApiConnectionString"));
+            });
+
+            services.AddAutoMapper();
+            services.AddTransient<ExampleApiSeeder>();
+            services.AddScoped<IExampleApiRepository, ExampleApiRepository>();
+
+            services.AddMvc()
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                    .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             // API and Swagger configuration
             services.AddApiVersioning();
@@ -81,6 +96,13 @@ namespace MicroServiceExampleAPI
                         options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                     }
                 });
+
+            if (env.IsDevelopment()){
+                using(var scope = app.ApplicationServices.CreateScope()){
+                    var seeder = scope.ServiceProvider.GetService<ExampleApiSeeder>();
+                    seeder.Seed();
+                }
+            }
         }
     }
 }
